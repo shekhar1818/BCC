@@ -2,6 +2,7 @@ App = {
   loading: false,
   contracts: {},  
   load: async () => {
+
     await App.loadWeb3()
     await App.loadAccount()
     await App.loadContract()
@@ -66,14 +67,43 @@ App = {
     var uname=$("#uname").val();
     var uemail=$("#uemail").val();
     var uphno=$("#uphno").val();
-    
     await App.college.addUser(uname,uemail,uphno,role,{from:App.account});
+    await App.render();
 
   },
   render: async () => { 
+
+    
     var role= await App.college.roles(App.account);
-    window.alert(role);
-    if(role=="1"){
+    //window.alert(role);
+
+    var admin=await App.college.admin();
+    
+    if(admin.toString().toUpperCase()==App.account.toString().toUpperCase()){
+
+        window.alert(admin);
+ 
+        var totalUsers=await App.college.totalUsers();
+        var count=parseInt(totalUsers);
+       $("#displayusers").empty();
+        for(var i=1;i<=count;i++){
+          var user=await App.college.users(parseInt(i));
+          var str="<tr><td>"+user[0]+"</td><td>"+user[1]+"</td><td>"+user[2]+"</td><td>"+user[3]+"</td></tr>";
+          $("#dispUsers").append(str);
+        }
+
+
+        $("#signupPage").hide();
+        $("#studentdashboard").hide();
+        $("#teacherdashboard").hide();
+        $("#officedashboard").hide();
+        $("#adminD").show();
+        
+        
+
+    }
+
+    else if(role=="1"){
 
       userInfo=await App.college.getUserInfo(App.account);
       $("#dispSname").html(userInfo[0]);
@@ -84,6 +114,7 @@ App = {
         $("#studentdashboard").show();
         $("#teacherdashboard").hide();
         $("#officedashboard").hide();
+        $("#adminD").hide();
 
   }
   else if(role=="2"){
@@ -98,6 +129,7 @@ App = {
     $("#studentdashboard").hide();
     $("#teacherdashboard").show();
     $("#officedashboard").hide();
+    $("#adminD").hide();
 
   }
 
@@ -112,6 +144,7 @@ App = {
     $("#studentdashboard").hide();
     $("#teacherdashboard").hide();
     $("#officedashboard").show();
+    $("#adminD").hide();
     
   }
   else{
@@ -120,6 +153,8 @@ App = {
     $("#studentdashboard").hide();
     $("#teacherdashboard").hide();
     $("#officedashboard").hide();
+    $("#adminD").hide();
+    
     
   }
     

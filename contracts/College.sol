@@ -2,7 +2,7 @@
 pragma solidity >=0.4.22 <0.8.0;
 
 contract College{
-
+address public admin;
 uint public totalUsers=0;
 mapping (address=>string) public roles;
 struct UserInfo{
@@ -12,6 +12,9 @@ string email;
 string phno;
 string role;
 
+}
+constructor() public{
+    admin=msg.sender;
 }
 
 mapping(uint=>UserInfo ) public users;
